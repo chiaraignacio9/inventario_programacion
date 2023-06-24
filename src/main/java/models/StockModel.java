@@ -1,5 +1,9 @@
 package models;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 public class StockModel {
     private int idArticulo;
     private int cantidad;
@@ -36,5 +40,23 @@ public class StockModel {
 
     public void setIdTalle(int idTalle) {
         this.idTalle = idTalle;
+    }
+
+    public void createTable(Connection connection) throws SQLException {
+        try (Statement statement = connection.createStatement()) {
+            // Statement es para hacer las consultas
+            String createTableQuery = "CREATE TABLE IF NOT EXISTS stock (" +
+                    "idArticulo INTEGER," +
+                    "cantidad INTEGER," +
+                    "idTalle INTEGER," +
+                    "FOREIGN KEY (idArticulo) REFERENCES articulos(idArticulo)," +
+                    "FOREIGN KEY (idTalle) REFERENCES talles(idTalle)" +
+                    ")";
+            statement.executeUpdate(createTableQuery);
+
+            System.out.println("Tabla 'stock' creada correctamente.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
