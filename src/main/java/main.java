@@ -1,4 +1,5 @@
 import models.*;
+import views.Layout;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -38,7 +39,7 @@ public class main {
                 stockModel.createTable(connection);
 
                 // Probando que se inserte correctamente en la tabla
-                //estadosModel.create(connection, new EstadosModel(0, "Disponible"));
+                //distribuidoresModel.create(connection, new DistribuidoresModel( "Cabracuervo", "Nada"));
 
                 // Probando la lectura a la tabla estados
                 //estadosModel.findAll(connection);
@@ -52,6 +53,7 @@ public class main {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+        Layout layout = new Layout();
+        layout.setVisible(true);
     }
 }
