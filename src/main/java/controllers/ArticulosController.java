@@ -1,6 +1,6 @@
 package controllers;
 
-import views.ArticulosView;
+import Views.ArticulosView;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

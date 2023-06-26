@@ -1,7 +1,7 @@
 package controllers;
 
-import models.*;
-import views.ArticulosView;
+import Models.*;
+import Views.ArticulosView;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

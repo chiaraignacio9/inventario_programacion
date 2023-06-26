@@ -1,4 +1,4 @@
-package views;
+package Views;
 import javax.swing.*;
 
 public class ArticulosView extends JPanel {

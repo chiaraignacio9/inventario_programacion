@@ -1,4 +1,4 @@
-package models;
+package Models;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -11,20 +11,18 @@ public class ArticulosModel {
     private int idMarca;
     private float precio;
     private int estado;
-    private int idCategoria;
     private int idDistribudor;
 
     public ArticulosModel() {
     }
 
-    public ArticulosModel(int idArticulo, int idTipoArticulo, String descripcion, int idMarca, float precio, int estado, int idCategoria, int idDistribudor) {
+    public ArticulosModel(int idArticulo, int idTipoArticulo, String descripcion, int idMarca, float precio, int estado, int idDistribudor) {
         this.idArticulo = idArticulo;
         this.idTipoArticulo = idTipoArticulo;
         this.descripcion = descripcion;
         this.idMarca = idMarca;
         this.precio = precio;
         this.estado = estado;
-        this.idCategoria = idCategoria;
         this.idDistribudor = idDistribudor;
     }
 
@@ -76,14 +74,6 @@ public class ArticulosModel {
         this.estado = estado;
     }
 
-    public int getIdCategoria() {
-        return idCategoria;
-    }
-
-    public void setIdCategoria(int idCategoria) {
-        this.idCategoria = idCategoria;
-    }
-
     public int getIdDistribudor() {
         return idDistribudor;
     }
@@ -102,11 +92,9 @@ public class ArticulosModel {
                     "idMarca INTEGER," +
                     "precio REAL," +
                     "estado INTEGER," +
-                    "idCategoria INTEGER," +
                     "idDistribudor INTEGER," +
                     "FOREIGN KEY (idMarca) REFERENCES marcas(id)," +
                     "FOREIGN KEY (estado) REFERENCES estados(id)," +
-                    "FOREIGN KEY (idCategoria) REFERENCES categorias(id)," +
                     "FOREIGN KEY (idDistribudor) REFERENCES distribuidores(id)," +
                     "FOREIGN KEY (idTipoArticulo) REFERENCES tiposArticulo(id)" +
                     ")";

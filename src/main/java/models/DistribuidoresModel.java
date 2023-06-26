@@ -1,4 +1,4 @@
-package models;
+package Models;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -129,23 +129,5 @@ public class DistribuidoresModel {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    public Connection connect(){
-        Connection connection = null;
-        String directorioActual = System.getProperty("user.dir");
-        try {
-            // Establecer la conexión a la base de datos SQLite
-            String url = "jdbc:sqlite:" + directorioActual + "/src/main/database/database.db";
-            connection = DriverManager.getConnection(url);
-
-            // Verificar si la conexión fue exitosa
-            if (connection != null) {
-                return connection;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }

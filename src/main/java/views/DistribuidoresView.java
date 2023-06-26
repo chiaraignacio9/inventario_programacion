@@ -1,5 +1,5 @@
-package views;
-import models.DistribuidoresModel;
+package Views;
+import Models.DistribuidoresModel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -32,10 +32,9 @@ public class DistribuidoresView extends JPanel {
         add(scrollPane);
 
     }
-    public void getAll(){
+    public void getAll(Connection connection){
         if(!table){
             DistribuidoresModel distribuidoresModel = new DistribuidoresModel();
-            Connection connection = distribuidoresModel.connect();
             List<DistribuidoresModel> list = distribuidoresModel.findAll(connection);
             for (DistribuidoresModel distribuidor: list) {
                 Object[] rowData = {distribuidor.getIdDistribuidores(), distribuidor.getRazonSocial(), distribuidor.getDescripcion()};
