@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
+import Models.ArticulosModelVM;
 
 /**
  *
@@ -39,16 +40,13 @@ public class DashBoard extends javax.swing.JFrame {
     DefaultTableModel tablaInventario;
     DefaultTableModel tablaDistribuidores;
     DefaultTableModel tablaTalles;
-    DistribuidoresModel distribuidoresModel = new DistribuidoresModel();
-    EstadosModel estadosModel = new EstadosModel();
-    ArticulosModel articulosModel = new ArticulosModel();
     
     ArticulosController articulosController = new ArticulosController();
     EstadosController estadosController = new EstadosController();
     DistribuidoresController distribuidorController = new DistribuidoresController();
     TalleController talleController = new TalleController();
     TiposArticuloController tiposArticuloController = new TiposArticuloController();
-
+    
     public DashBoard() {
         initComponents();
         tablaInventario = new DefaultTableModel();
@@ -57,20 +55,25 @@ public class DashBoard extends javax.swing.JFrame {
         
 
         tablaInventario.addColumn("ID");
-        tablaInventario.addColumn("Descripcion");
-        tablaInventario.addColumn("Marca");
         tablaInventario.addColumn("Tipo de Articulo");
+        tablaInventario.addColumn("Descripcion");
+        tablaInventario.addColumn("Marca");        
         tablaInventario.addColumn("Distribuidor");
         tablaInventario.addColumn("Estado");
         tablaInventario.addColumn("Precio");
+        tablaInventario.addColumn("Prueba");
         
-        List<Object> articulosModelList = articulosController.getAll();
-        for(Object articulo : articulosModelList){            
-            tablaInventario.addRow((Object[]) articulo);
-        }
-        
-        this.jTable10.setModel(tablaInventario);
+        List<ArticulosModelVM> articulosModelVMList = articulosController.getAll();
+        if(articulosModelVMList.size() > 0){
+            for(ArticulosModelVM articulo : articulosModelVMList){     
+                Object[] registro = {articulo.getIdArticulo(), articulo.getTipo(), articulo.getDescripcion(), articulo.getMarca(), articulo.getMarca(), 
+                                    articulo.getEstado(), articulo.getPrecio(), articulo.getTalle()};
+            tablaInventario.addRow(registro);
+            }  
+        }              
+        this.TablaArticulos.setModel(tablaInventario);
 
+        
         tablaDistribuidores.addColumn("ID");
         tablaDistribuidores.addColumn("Razón Social");
         tablaDistribuidores.addColumn("Descripción");
@@ -107,12 +110,12 @@ public class DashBoard extends javax.swing.JFrame {
         this.marcaArticulo.addItem(new MarcaModel(3,"New Balance", ""));
         this.marcaArticulo.addItem(new MarcaModel(4,"MendoUrban", ""));
         
-        
         List<EstadosModel> estadosModelList = estadosController.getAll();
         for(EstadosModel estado : estadosModelList){
-            System.out.println(estado);
             this.estadoArticulo.addItem(estado);
-        }                
+        }
+        
+        LlenarTablaArticulos();
     }
 
     public void llenarDistribuidoresTabla() {
@@ -124,7 +127,7 @@ public class DashBoard extends javax.swing.JFrame {
             tablaDistribuidores.addRow(registro);
             this.distribuidorArticulo.addItem(distribuidor);
         }
-
+        
         this.jTable11.setModel(tablaDistribuidores);
     }
 
@@ -138,6 +141,17 @@ public class DashBoard extends javax.swing.JFrame {
             this.talleArticulo.addItem(talle);
         }
         this.jTable12.setModel(tablaTalles);
+    }
+    
+    public void LlenarTablaArticulos() {
+        DefaultTableModel model = (DefaultTableModel) TablaArticulos.getModel();
+        model.setRowCount(0);
+        List<ArticulosModelVM> lista = articulosController.getAll();
+        for (ArticulosModelVM articulo : lista) {
+            Object[] registro = {articulo.getIdArticulo(),articulo.getDescripcion(),articulo.getMarca(),articulo.getTipo(),articulo.getEstado(),articulo.getPrecio()};
+            this.tablaInventario.addRow(registro);
+        }        
+        this.TablaArticulos.setModel(tablaInventario);
     }
 
     class jPanelGradiente extends JPanel {
@@ -154,11 +168,6 @@ public class DashBoard extends javax.swing.JFrame {
             g2d.fillRect(0, 0, width, height);
         }
     }
-
-    public void llenarTablaInventario() {
-
-    }
-
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -201,18 +210,18 @@ public class DashBoard extends javax.swing.JFrame {
         jLabel17 = new javax.swing.JLabel();
         jPanel38 = new javax.swing.JPanel();
         jScrollPane10 = new javax.swing.JScrollPane();
-        jTable10 = new javax.swing.JTable();
+        TablaArticulos = new javax.swing.JTable();
         jLabel75 = new javax.swing.JLabel();
         jLabel76 = new javax.swing.JLabel();
         jLabel77 = new javax.swing.JLabel();
         jLabel78 = new javax.swing.JLabel();
         jLabel79 = new javax.swing.JLabel();
         jLabel80 = new javax.swing.JLabel();
-        jPanel39 = new javax.swing.JPanel();
+        EditarArticulobtn = new javax.swing.JPanel();
         jLabel81 = new javax.swing.JLabel();
-        jPanel40 = new javax.swing.JPanel();
+        AgregarArticulobtn = new javax.swing.JPanel();
         jLabel82 = new javax.swing.JLabel();
-        jPanel41 = new javax.swing.JPanel();
+        EliminarArticulobtn = new javax.swing.JPanel();
         jLabel83 = new javax.swing.JLabel();
         tipoArticulo = new javax.swing.JComboBox<>();
         estadoArticulo = new javax.swing.JComboBox<>();
@@ -293,7 +302,7 @@ public class DashBoard extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Dubai Medium", 0, 24)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Talles");
-        TallesBTN.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 0, 60, 50));
+        TallesBTN.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 0, 150, 50));
 
         jPanel2.add(TallesBTN, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 520, 350, 50));
 
@@ -469,7 +478,15 @@ public class DashBoard extends javax.swing.JFrame {
         jPanel38.setBackground(new java.awt.Color(250, 250, 250));
         jPanel38.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jScrollPane10.setViewportView(jTable10);
+        TablaArticulos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane10.setViewportView(TablaArticulos);
 
         jPanel38.add(jScrollPane10, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 910, 310));
 
@@ -497,37 +514,45 @@ public class DashBoard extends javax.swing.JFrame {
         jLabel80.setText("Estado");
         jPanel38.add(jLabel80, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 430, -1, -1));
 
-        jPanel39.setBackground(new java.awt.Color(255, 153, 153));
-        jPanel39.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        EditarArticulobtn.setBackground(new java.awt.Color(255, 153, 153));
+        EditarArticulobtn.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel81.setFont(new java.awt.Font("Dubai Medium", 0, 18)); // NOI18N
         jLabel81.setText("Editar");
-        jPanel39.add(jLabel81, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 0, -1, 40));
+        EditarArticulobtn.add(jLabel81, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 0, -1, 40));
 
-        jPanel38.add(jPanel39, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 510, 120, 40));
+        jPanel38.add(EditarArticulobtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 510, 120, 40));
 
-        jPanel40.setBackground(new java.awt.Color(255, 153, 153));
-        jPanel40.addMouseListener(new java.awt.event.MouseAdapter() {
+        AgregarArticulobtn.setBackground(new java.awt.Color(255, 153, 153));
+        AgregarArticulobtn.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                AgregarArticulobtnMouseMoved(evt);
+            }
+        });
+        AgregarArticulobtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 crearArticulo(evt);
             }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                AgregarArticulobtnMouseExited(evt);
+            }
         });
-        jPanel40.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        AgregarArticulobtn.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel82.setFont(new java.awt.Font("Dubai Medium", 0, 18)); // NOI18N
         jLabel82.setText("Agregar");
-        jPanel40.add(jLabel82, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 0, -1, 40));
+        AgregarArticulobtn.add(jLabel82, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 0, -1, 40));
 
-        jPanel38.add(jPanel40, new org.netbeans.lib.awtextra.AbsoluteConstraints(800, 510, 120, 40));
+        jPanel38.add(AgregarArticulobtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(800, 510, 120, 40));
 
-        jPanel41.setBackground(new java.awt.Color(255, 153, 153));
-        jPanel41.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        EliminarArticulobtn.setBackground(new java.awt.Color(255, 153, 153));
+        EliminarArticulobtn.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel83.setFont(new java.awt.Font("Dubai Medium", 0, 18)); // NOI18N
         jLabel83.setText("Eliminar");
-        jPanel41.add(jLabel83, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 0, -1, 40));
+        EliminarArticulobtn.add(jLabel83, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 0, -1, 40));
 
-        jPanel38.add(jPanel41, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 510, 120, 40));
+        jPanel38.add(EliminarArticulobtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 510, 120, 40));
 
         tipoArticulo.setFont(new java.awt.Font("Dubai Light", 0, 14)); // NOI18N
         tipoArticulo.addActionListener(new java.awt.event.ActionListener() {
@@ -579,6 +604,14 @@ public class DashBoard extends javax.swing.JFrame {
         });
         jPanel42.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jTable11.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
         jTable11.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 seleccionarDistribuidor(evt);
@@ -644,10 +677,10 @@ public class DashBoard extends javax.swing.JFrame {
                 razonSocialActionPerformed(evt);
             }
         });
-        jPanel42.add(razonSocial, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 380, 150, -1));
+        jPanel42.add(razonSocial, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 380, 150, -1));
 
         descripcion.setFont(new java.awt.Font("Dubai Light", 0, 14)); // NOI18N
-        jPanel42.add(descripcion, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 380, 150, -1));
+        jPanel42.add(descripcion, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 380, 150, -1));
 
         PanelMultiple.addTab("tab2", jPanel42);
 
@@ -913,7 +946,7 @@ public class DashBoard extends javax.swing.JFrame {
         int idEstado = estado.getIdEstado();
         
         articulosController.create(new ArticulosModel(
-        0, idTipoArticulo, descipcion, idMarca, precio, idEstado, idDistribuidor
+        idTipoArticulo, descipcion, idMarca, precio, idEstado, idDistribuidor
         ));
         
         System.out.println(idTalle + ", " + descipcion);
@@ -924,6 +957,14 @@ public class DashBoard extends javax.swing.JFrame {
     private void marcaArticuloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_marcaArticuloActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_marcaArticuloActionPerformed
+
+    private void AgregarArticulobtnMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AgregarArticulobtnMouseMoved
+        AgregarArticulobtn.setBackground(new Color(255, 153, 153));
+    }//GEN-LAST:event_AgregarArticulobtnMouseMoved
+
+    private void AgregarArticulobtnMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AgregarArticulobtnMouseExited
+        AgregarArticulobtn.setBackground(new Color(255, 120, 120));
+    }//GEN-LAST:event_AgregarArticulobtnMouseExited
 
     public void AbrirPagina(String url) {
         try {
@@ -941,11 +982,15 @@ public class DashBoard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel AgregarArticulobtn;
     private javax.swing.JPanel DistribuidoresBTN;
+    private javax.swing.JPanel EditarArticulobtn;
+    private javax.swing.JPanel EliminarArticulobtn;
     private javax.swing.JPanel InicioBTN;
     private javax.swing.JLabel Logo;
     private javax.swing.JTabbedPane PanelMultiple;
     private javax.swing.JPanel StockBTN;
+    private javax.swing.JTable TablaArticulos;
     private javax.swing.JPanel TallesBTN;
     private javax.swing.JTextField descripcion;
     private javax.swing.JTextField descripcionArticulo;
@@ -1001,9 +1046,6 @@ public class DashBoard extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel38;
-    private javax.swing.JPanel jPanel39;
-    private javax.swing.JPanel jPanel40;
-    private javax.swing.JPanel jPanel41;
     private javax.swing.JPanel jPanel42;
     private javax.swing.JPanel jPanel43;
     private javax.swing.JPanel jPanel44;
@@ -1016,7 +1058,6 @@ public class DashBoard extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane10;
     private javax.swing.JScrollPane jScrollPane11;
     private javax.swing.JScrollPane jScrollPane12;
-    private javax.swing.JTable jTable10;
     private javax.swing.JTable jTable11;
     private javax.swing.JTable jTable12;
     private javax.swing.JComboBox<MarcaModel> marcaArticulo;

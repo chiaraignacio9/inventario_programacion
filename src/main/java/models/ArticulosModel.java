@@ -19,8 +19,7 @@ public class ArticulosModel {
     public ArticulosModel() {
     }
 
-    public ArticulosModel(int idArticulo, int idTipoArticulo, String descripcion, int idMarca, float precio, int estado, int idDistribudor) {
-        this.idArticulo = idArticulo;
+    public ArticulosModel(int idTipoArticulo, String descripcion, int idMarca, float precio, int estado, int idDistribudor) {
         this.idTipoArticulo = idTipoArticulo;
         this.descripcion = descripcion;
         this.idMarca = idMarca;
@@ -95,11 +94,8 @@ public class ArticulosModel {
                     "idMarca INTEGER," +
                     "precio REAL," +
                     "estado INTEGER," +
+                    "idTalle INTEGER" +
                     "idDistribuidor INTEGER," +
-                    "FOREIGN KEY (idMarca) REFERENCES marcas(id)," +
-                    "FOREIGN KEY (estado) REFERENCES estados(id)," +
-                    "FOREIGN KEY (idDistribudor) REFERENCES distribuidores(id)," +
-                    "FOREIGN KEY (idTipoArticulo) REFERENCES tiposArticulo(id)" +
                     ")";
             statement.executeUpdate(createTableQuery);
 
@@ -109,32 +105,32 @@ public class ArticulosModel {
         }
     }
     
-    public List<Object> findAll(Connection connection){
-        List<Object> list = new ArrayList<>();
+    public List<ArticulosModelVM> findAll(Connection connection){
+        List<ArticulosModelVM> list = new ArrayList<>();
         try (Statement statement = connection.createStatement()) {
             // Statement es para hacer las consultas
-            String selectAll = "SELECT articulos.*, marcas.nombre as marca,"
-                    + "talles.descripcion as talle, tiposArticulo.descripcion as tipo "
-                    + "FROM articulos "
-                    + "INNER JOIN marcas ON articulos.idMarca = marcas.idMarca "
-                    + "INNER JOIN talles ON articulos.idTalle = talles.idTalle "
-                    + "INNER JOIN tiposArticulo ON articulos.idTipoArticulo = tiposArticulo.idTipoArticulo "
-                    + "INNER JOIN estados ON articulo.estado = estados.idEstado";
+            String selectAll = "SELECT a.precio, d.razonSocial as razonSocial, a.idArticulo,a.descripcion, IFNULL(m.nombre,'') as marca," +
+                        "IFNULL(t.descripcion,'') as talle, IFNULL(ta.descripcion,'') as tipo, e.descripcion as estado " +
+                        "FROM articulos a " +
+                        "LEFT JOIN marcas m ON a.idMarca = m.idMarca " +
+                        "LEFT JOIN distribuidores d ON a.idDistribuidor = d.idDistribuidor " +
+                        "LEFT JOIN talles t ON a.idTalle = t.idTalle " +
+                        "LEFT JOIN tiposArticulo ta ON a.idTipoArticulo = ta.idTipoArticulo " +
+                        "LEFT JOIN estados e ON a.estado = e.idEstado";
             ResultSet resultSet = statement.executeQuery(selectAll);
             
             while (resultSet.next()){
                 
-                Object[] obj = {
+                list.add(new ArticulosModelVM(
                     resultSet.getInt("idArticulo"),
                     resultSet.getString("descripcion"),
                     resultSet.getString("marca"),
                     resultSet.getString("talle"),
                     resultSet.getString("tipo"),
                     resultSet.getString("estado"),
-                    resultSet.getFloat("precio")
-                };
-                
-                list.add(obj);
+                    resultSet.getFloat("precio"),
+                    resultSet.getString("razonSocial")                        
+                ));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -146,11 +142,9 @@ public class ArticulosModel {
         try (Statement statement = connection.createStatement()) {
             // Statement es para hacer las consultas
             String insert = "INSERT INTO articulos"
-                    + "(idTipoArticulo, descripcion, idMarca, precio, estado, idDistribuidor)"
+                    + "(descripcion, idMarca, precio, estado, idDistribuidor)"
                     + "VALUES"
                     + "('"
-                    + articulo.getIdTipoArticulo()
-                    +"','"
                     + articulo.getDescripcion()
                     +"','"
                     + articulo.getIdMarca()

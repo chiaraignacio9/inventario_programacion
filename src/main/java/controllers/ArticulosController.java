@@ -6,6 +6,7 @@ import Models.EstadosModel;
 import Models.TiposArticuloModel;
 import java.util.List;
 import javax.swing.JOptionPane;
+import Models.ArticulosModelVM;
 
 public class ArticulosController {
     private Database database = new Database();
@@ -17,7 +18,9 @@ public class ArticulosController {
         return;
     }
     
-    public List<Object> getAll(){
+    public List<ArticulosModelVM> getAll(){
         return model.findAll(database.conectar());
     }
+    
 }
+
