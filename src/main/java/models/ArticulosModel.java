@@ -10,22 +10,40 @@ import java.util.List;
 public class ArticulosModel {
     private int idArticulo;
     private int idTipoArticulo;
-    private String descripcion;
-    private int idMarca;
+    private String descripcion;    
     private float precio;
     private int estado;
     private int idDistribudor;
+    private int idTalle;
 
     public ArticulosModel() {
     }
 
-    public ArticulosModel(int idTipoArticulo, String descripcion, int idMarca, float precio, int estado, int idDistribudor) {
+    public ArticulosModel(int idArticulo, int idTipoArticulo, String descripcion, float precio, int estado, int idDistribudor, int idTalle) {
+        this.idArticulo = idArticulo;
         this.idTipoArticulo = idTipoArticulo;
         this.descripcion = descripcion;
-        this.idMarca = idMarca;
         this.precio = precio;
         this.estado = estado;
         this.idDistribudor = idDistribudor;
+        this.idTalle = idTalle;
+    }
+
+    public ArticulosModel(int idTipoArticulo, String descripcion, float precio, int estado, int idDistribudor, int idTalle) {
+        this.idTipoArticulo = idTipoArticulo;
+        this.descripcion = descripcion;        
+        this.precio = precio;
+        this.estado = estado;
+        this.idDistribudor = idDistribudor;
+        this.idTalle = idTalle;
+    }
+
+    public int getIdTalle() {
+        return idTalle;
+    }
+
+    public void setIdTalle(int idTalle) {
+        this.idTalle = idTalle;
     }
 
     public int getIdArticulo() {
@@ -50,14 +68,6 @@ public class ArticulosModel {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
-    }
-
-    public int getIdMarca() {
-        return idMarca;
-    }
-
-    public void setIdMarca(int idMarca) {
-        this.idMarca = idMarca;
     }
 
     public float getPrecio() {
@@ -109,22 +119,23 @@ public class ArticulosModel {
         List<ArticulosModelVM> list = new ArrayList<>();
         try (Statement statement = connection.createStatement()) {
             // Statement es para hacer las consultas
-            String selectAll = "SELECT a.precio, d.razonSocial as razonSocial, a.idArticulo,a.descripcion, IFNULL(m.nombre,'') as marca," +
+            String selectAll = "SELECT a.precio, d.razonSocial as razonSocial, a.idArticulo,a.descripcion," +
                         "IFNULL(t.descripcion,'') as talle, IFNULL(ta.descripcion,'') as tipo, e.descripcion as estado " +
                         "FROM articulos a " +
-                        "LEFT JOIN marcas m ON a.idMarca = m.idMarca " +
-                        "LEFT JOIN distribuidores d ON a.idDistribuidor = d.idDistribuidor " +
-                        "LEFT JOIN talles t ON a.idTalle = t.idTalle " +
-                        "LEFT JOIN tiposArticulo ta ON a.idTipoArticulo = ta.idTipoArticulo " +
-                        "LEFT JOIN estados e ON a.estado = e.idEstado";
+                        "INNER JOIN distribuidores d ON a.idDistribuidor = d.idDistribuidor " +
+                        "INNER JOIN talles t ON a.idTalle = t.idTalle " +
+                        "INNER JOIN tiposArticulo ta ON a.idTipoArticulo = ta.idTipoArticulo " +
+                        "INNER JOIN estados e ON a.estado = e.idEstado";
+            
+            System.out.println(selectAll);
+            
+            
             ResultSet resultSet = statement.executeQuery(selectAll);
             
-            while (resultSet.next()){
-                
+            while (resultSet.next()){                                                
                 list.add(new ArticulosModelVM(
                     resultSet.getInt("idArticulo"),
-                    resultSet.getString("descripcion"),
-                    resultSet.getString("marca"),
+                    resultSet.getString("descripcion"),                       
                     resultSet.getString("talle"),
                     resultSet.getString("tipo"),
                     resultSet.getString("estado"),
@@ -142,21 +153,52 @@ public class ArticulosModel {
         try (Statement statement = connection.createStatement()) {
             // Statement es para hacer las consultas
             String insert = "INSERT INTO articulos"
-                    + "(descripcion, idMarca, precio, estado, idDistribuidor)"
+                    + "(descripcion, precio, estado, idDistribuidor, idTIpoArticulo, idTalle)"
                     + "VALUES"
                     + "('"
-                    + articulo.getDescripcion()
-                    +"','"
-                    + articulo.getIdMarca()
+                    + articulo.getDescripcion()                                        
                     +"','"
                     + articulo.getPrecio()
                     +"','"
                     + articulo.getEstado()
                     +"','"
-                    + articulo.getIdDistribudor()                    
+                    + articulo.getIdDistribudor()                                        
+                    +"','"
+                    + articulo.getIdTipoArticulo()
+                    +"','"
+                    + articulo.getIdTalle()
                     + "')";
             statement.executeUpdate(insert);
             System.out.println("Registro insertado con éxito.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void update(Connection connection, ArticulosModel articulo){
+        try (Statement statement = connection.createStatement()) {
+            // Statement es para hacer las consultas
+            String update = "UPDATE articulos SET " 
+               + "idTipoArticulo = " + articulo.getIdTipoArticulo() + ", "
+               + "descripcion = '" + articulo.getDescripcion() + "', "
+               + "precio = " + articulo.getPrecio() + ", "
+               + "estado = " + articulo.getEstado() + ", "
+               + "idDistribuidor = " + articulo.getIdDistribudor() + ", "
+               + "idTalle = " + articulo.getIdTalle() + " "
+               + "WHERE idArticulo = " + articulo.getIdArticulo();
+
+               statement.executeUpdate(update);   
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void deleteById(Connection connection, int id) {
+        try (Statement statement = connection.createStatement()) {
+            // Statement es para hacer las consultas
+            String delete = "DELETE FROM articulos WHERE idArticulo = " + id;
+            statement.execute(delete);
+            return;
         } catch (SQLException e) {
             e.printStackTrace();
         }

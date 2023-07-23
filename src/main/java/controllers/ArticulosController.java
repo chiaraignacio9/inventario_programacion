@@ -22,5 +22,13 @@ public class ArticulosController {
         return model.findAll(database.conectar());
     }
     
+    public void update (ArticulosModel articulo){
+        model.update(database.conectar(), articulo);
+    }
+    
+    public void delete(int id){
+        model.deleteById(database.conectar(), id);
+    }
+    
 }
 

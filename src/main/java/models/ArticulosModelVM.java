@@ -4,17 +4,15 @@ public class ArticulosModelVM{
     
     private int idArticulo;
     private String descripcion;
-    private String marca;
     private String talle;
     private String tipo;
     private String estado;
     private float precio;
     private String distribuidor;
 
-    public ArticulosModelVM(int idArticulo, String descripcion, String marca, String talle, String tipo, String estado, float precio,String distribuidor) {
+    public ArticulosModelVM(int idArticulo, String descripcion, String talle, String tipo, String estado, float precio,String distribuidor) {
         this.idArticulo = idArticulo;
         this.descripcion = descripcion;
-        this.marca = marca;
         this.talle = talle;
         this.tipo = tipo;
         this.estado = estado;
@@ -36,14 +34,6 @@ public class ArticulosModelVM{
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
-    }
-
-    public String getMarca() {
-        return marca;
-    }
-
-    public void setMarca(String marca) {
-        this.marca = marca;
     }
 
     public String getTalle() {
@@ -76,6 +66,14 @@ public class ArticulosModelVM{
 
     public void setPrecio(float precio) {
         this.precio = precio;
+    }
+
+    public String getDistribuidor() {
+        return distribuidor;
+    }
+
+    public void setDistribuidor(String distribuidor) {
+        this.distribuidor = distribuidor;
     }
     
 }

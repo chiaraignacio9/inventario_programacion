@@ -4,11 +4,9 @@
  */
 package Views;
 
-import Database.Database;
 import Models.ArticulosModel;
 import Models.DistribuidoresModel;
 import Models.EstadosModel;
-import Models.MarcaModel;
 import Models.TalleModel;
 import Models.TiposArticuloModel;
 import controllers.ArticulosController;
@@ -40,40 +38,43 @@ public class DashBoard extends javax.swing.JFrame {
     DefaultTableModel tablaInventario;
     DefaultTableModel tablaDistribuidores;
     DefaultTableModel tablaTalles;
-    
+
     ArticulosController articulosController = new ArticulosController();
     EstadosController estadosController = new EstadosController();
     DistribuidoresController distribuidorController = new DistribuidoresController();
     TalleController talleController = new TalleController();
     TiposArticuloController tiposArticuloController = new TiposArticuloController();
-    
+
     public DashBoard() {
         initComponents();
-        tablaInventario = new DefaultTableModel();
+
         tablaDistribuidores = new DefaultTableModel();
         tablaTalles = new DefaultTableModel();
-        
-
+        tablaInventario = new DefaultTableModel();
         tablaInventario.addColumn("ID");
         tablaInventario.addColumn("Tipo de Articulo");
         tablaInventario.addColumn("Descripcion");
-        tablaInventario.addColumn("Marca");        
         tablaInventario.addColumn("Distribuidor");
         tablaInventario.addColumn("Estado");
+        tablaInventario.addColumn("Talle");
         tablaInventario.addColumn("Precio");
-        tablaInventario.addColumn("Prueba");
-        
+
         List<ArticulosModelVM> articulosModelVMList = articulosController.getAll();
-        if(articulosModelVMList.size() > 0){
-            for(ArticulosModelVM articulo : articulosModelVMList){     
-                Object[] registro = {articulo.getIdArticulo(), articulo.getTipo(), articulo.getDescripcion(), articulo.getMarca(), articulo.getMarca(), 
-                                    articulo.getEstado(), articulo.getPrecio(), articulo.getTalle()};
-            tablaInventario.addRow(registro);
-            }  
-        }              
+        if (!articulosModelVMList.isEmpty()) {
+            for (ArticulosModelVM articulo : articulosModelVMList) {
+                Object[] registro = {
+                    articulo.getIdArticulo(),
+                    articulo.getTipo(),
+                    articulo.getDescripcion(),
+                    articulo.getDistribuidor(),
+                    articulo.getEstado(),
+                    articulo.getTalle(),
+                    articulo.getPrecio()};
+                tablaInventario.addRow(registro);
+            }
+        }
         this.TablaArticulos.setModel(tablaInventario);
 
-        
         tablaDistribuidores.addColumn("ID");
         tablaDistribuidores.addColumn("Razón Social");
         tablaDistribuidores.addColumn("Descripción");
@@ -98,24 +99,18 @@ public class DashBoard extends javax.swing.JFrame {
             tablaTalles.addRow(registro);
             this.talleArticulo.addItem(talle);
         }
-        this.jTable12.setModel(tablaTalles);                                     
-        
+        this.jTable12.setModel(tablaTalles);
+
         List<TiposArticuloModel> listTiposArticulos = tiposArticuloController.getAll();
-        for(TiposArticuloModel tipo : listTiposArticulos){
+        for (TiposArticuloModel tipo : listTiposArticulos) {
             this.tipoArticulo.addItem(tipo);
         }
-        
-        this.marcaArticulo.addItem(new MarcaModel(1, "Adidas", ""));
-        this.marcaArticulo.addItem(new MarcaModel(2, "Nike", ""));
-        this.marcaArticulo.addItem(new MarcaModel(3,"New Balance", ""));
-        this.marcaArticulo.addItem(new MarcaModel(4,"MendoUrban", ""));
-        
+
         List<EstadosModel> estadosModelList = estadosController.getAll();
-        for(EstadosModel estado : estadosModelList){
+        for (EstadosModel estado : estadosModelList) {
             this.estadoArticulo.addItem(estado);
         }
-        
-        LlenarTablaArticulos();
+
     }
 
     public void llenarDistribuidoresTabla() {
@@ -127,7 +122,7 @@ public class DashBoard extends javax.swing.JFrame {
             tablaDistribuidores.addRow(registro);
             this.distribuidorArticulo.addItem(distribuidor);
         }
-        
+
         this.jTable11.setModel(tablaDistribuidores);
     }
 
@@ -142,15 +137,22 @@ public class DashBoard extends javax.swing.JFrame {
         }
         this.jTable12.setModel(tablaTalles);
     }
-    
+
     public void LlenarTablaArticulos() {
         DefaultTableModel model = (DefaultTableModel) TablaArticulos.getModel();
         model.setRowCount(0);
         List<ArticulosModelVM> lista = articulosController.getAll();
         for (ArticulosModelVM articulo : lista) {
-            Object[] registro = {articulo.getIdArticulo(),articulo.getDescripcion(),articulo.getMarca(),articulo.getTipo(),articulo.getEstado(),articulo.getPrecio()};
+            Object[] registro = {
+                articulo.getIdArticulo(),
+                articulo.getTipo(),
+                articulo.getDescripcion(),
+                articulo.getDistribuidor(),
+                articulo.getEstado(),
+                articulo.getTalle(),
+                articulo.getPrecio()};
             this.tablaInventario.addRow(registro);
-        }        
+        }
         this.TablaArticulos.setModel(tablaInventario);
     }
 
@@ -168,6 +170,7 @@ public class DashBoard extends javax.swing.JFrame {
             g2d.fillRect(0, 0, width, height);
         }
     }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -229,8 +232,6 @@ public class DashBoard extends javax.swing.JFrame {
         descripcionArticulo = new javax.swing.JTextField();
         precioArticulo = new javax.swing.JTextField();
         talleArticulo = new javax.swing.JComboBox<>();
-        jLabel84 = new javax.swing.JLabel();
-        marcaArticulo = new javax.swing.JComboBox<>();
         jPanel42 = new javax.swing.JPanel();
         jScrollPane11 = new javax.swing.JScrollPane();
         jTable11 = new javax.swing.JTable();
@@ -486,6 +487,11 @@ public class DashBoard extends javax.swing.JFrame {
 
             }
         ));
+        TablaArticulos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TablaArticulosMouseClicked(evt);
+            }
+        });
         jScrollPane10.setViewportView(TablaArticulos);
 
         jPanel38.add(jScrollPane10, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 910, 310));
@@ -504,7 +510,7 @@ public class DashBoard extends javax.swing.JFrame {
 
         jLabel78.setFont(new java.awt.Font("Dubai Medium", 0, 14)); // NOI18N
         jLabel78.setText("Distribuidor");
-        jPanel38.add(jLabel78, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 500, -1, -1));
+        jPanel38.add(jLabel78, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 360, -1, -1));
 
         jLabel79.setFont(new java.awt.Font("Dubai Medium", 0, 14)); // NOI18N
         jLabel79.setText("Precio");
@@ -515,6 +521,11 @@ public class DashBoard extends javax.swing.JFrame {
         jPanel38.add(jLabel80, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 430, -1, -1));
 
         EditarArticulobtn.setBackground(new java.awt.Color(255, 153, 153));
+        EditarArticulobtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                EditarArticulobtnMouseClicked(evt);
+            }
+        });
         EditarArticulobtn.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel81.setFont(new java.awt.Font("Dubai Medium", 0, 18)); // NOI18N
@@ -546,6 +557,11 @@ public class DashBoard extends javax.swing.JFrame {
         jPanel38.add(AgregarArticulobtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(800, 510, 120, 40));
 
         EliminarArticulobtn.setBackground(new java.awt.Color(255, 153, 153));
+        EliminarArticulobtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                EliminarArticulobtnMouseClicked(evt);
+            }
+        });
         EliminarArticulobtn.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel83.setFont(new java.awt.Font("Dubai Medium", 0, 18)); // NOI18N
@@ -571,7 +587,7 @@ public class DashBoard extends javax.swing.JFrame {
                 distribuidorArticuloActionPerformed(evt);
             }
         });
-        jPanel38.add(distribuidorArticulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 500, 150, -1));
+        jPanel38.add(distribuidorArticulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 360, 150, -1));
 
         descripcionArticulo.setFont(new java.awt.Font("Dubai Light", 0, 14)); // NOI18N
         jPanel38.add(descripcionArticulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 360, 150, -1));
@@ -581,18 +597,6 @@ public class DashBoard extends javax.swing.JFrame {
 
         talleArticulo.setFont(new java.awt.Font("Dubai Light", 0, 14)); // NOI18N
         jPanel38.add(talleArticulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 430, 150, -1));
-
-        jLabel84.setFont(new java.awt.Font("Dubai Medium", 0, 14)); // NOI18N
-        jLabel84.setText("Marca");
-        jPanel38.add(jLabel84, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 360, -1, -1));
-
-        marcaArticulo.setFont(new java.awt.Font("Dubai Light", 0, 14)); // NOI18N
-        marcaArticulo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                marcaArticuloActionPerformed(evt);
-            }
-        });
-        jPanel38.add(marcaArticulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 360, 150, -1));
 
         PanelMultiple.addTab("tab2", jPanel38);
 
@@ -926,37 +930,28 @@ public class DashBoard extends javax.swing.JFrame {
     }//GEN-LAST:event_distribuidorArticuloActionPerformed
 
     private void crearArticulo(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_crearArticulo
-        String descipcion =  this.descripcionArticulo.getText();
-        
+        String descipcion = this.descripcionArticulo.getText();
+
         TalleModel talleSeleccionado = (TalleModel) this.talleArticulo.getSelectedItem();
         int idTalle = talleSeleccionado.getIdTalle();
-        
-        TiposArticuloModel tipoArticulo = (TiposArticuloModel) this.tipoArticulo.getSelectedItem();
-        int idTipoArticulo = tipoArticulo.getIdTipoArticulo();
-        
-        MarcaModel marca = (MarcaModel) this.marcaArticulo.getSelectedItem();
-        int idMarca = marca.getIdMarca();
-        
+
+        TiposArticuloModel tipoArticuloSeleccionado = (TiposArticuloModel) this.tipoArticulo.getSelectedItem();
+        int idTipoArticulo = tipoArticuloSeleccionado.getIdTipoArticulo();
+
         float precio = Float.parseFloat(this.precioArticulo.getText());
-        
+
         DistribuidoresModel distribuidor = (DistribuidoresModel) this.distribuidorArticulo.getSelectedItem();
         int idDistribuidor = distribuidor.getIdDistribuidores();
-        
+
         EstadosModel estado = (EstadosModel) this.estadoArticulo.getSelectedItem();
         int idEstado = estado.getIdEstado();
-        
-        articulosController.create(new ArticulosModel(
-        idTipoArticulo, descipcion, idMarca, precio, idEstado, idDistribuidor
-        ));
-        
-        System.out.println(idTalle + ", " + descipcion);
-        System.out.println(idTipoArticulo + ", " + idMarca);
-        System.out.println(precio + ", " + idDistribuidor);
-    }//GEN-LAST:event_crearArticulo
 
-    private void marcaArticuloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_marcaArticuloActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_marcaArticuloActionPerformed
+        articulosController.create(new ArticulosModel(
+                idTipoArticulo, descipcion, precio, idEstado, idDistribuidor, idTalle
+        ));
+        LlenarTablaArticulos();
+
+    }//GEN-LAST:event_crearArticulo
 
     private void AgregarArticulobtnMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AgregarArticulobtnMouseMoved
         AgregarArticulobtn.setBackground(new Color(255, 153, 153));
@@ -965,6 +960,80 @@ public class DashBoard extends javax.swing.JFrame {
     private void AgregarArticulobtnMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AgregarArticulobtnMouseExited
         AgregarArticulobtn.setBackground(new Color(255, 120, 120));
     }//GEN-LAST:event_AgregarArticulobtnMouseExited
+
+    private void TablaArticulosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TablaArticulosMouseClicked
+        int filaSeleccionada = TablaArticulos.getSelectedRow();        
+        descripcionArticulo.setText(TablaArticulos.getValueAt(filaSeleccionada, 2).toString());
+        precioArticulo.setText(TablaArticulos.getValueAt(filaSeleccionada, 6).toString());
+        String talleSeleccionado = TablaArticulos.getValueAt(filaSeleccionada, 5).toString();
+        String tipo = TablaArticulos.getValueAt(filaSeleccionada, 1).toString();
+        String distribuidor = TablaArticulos.getValueAt(filaSeleccionada, 3).toString();
+        String estado = TablaArticulos.getValueAt(filaSeleccionada, 4).toString();
+        
+        for (int i = 0; i < talleArticulo.getItemCount(); i++) {
+            String talleItem = talleArticulo.getItemAt(i).toString();
+            if (talleItem.equals(talleSeleccionado)) {
+                talleArticulo.setSelectedIndex(i);
+                break;
+            }
+        }
+        
+        for (int i = 0; i < distribuidorArticulo.getItemCount(); i++) {
+            String talleItem = distribuidorArticulo.getItemAt(i).toString();
+            if (talleItem.equals(distribuidor)) {
+                distribuidorArticulo.setSelectedIndex(i);
+                break;
+            }
+        }
+        
+        for (int i = 0; i < estadoArticulo.getItemCount(); i++) {
+            String talleItem = estadoArticulo.getItemAt(i).toString();
+            if (talleItem.equals(estado)) {
+                estadoArticulo.setSelectedIndex(i);
+                break;
+            }
+        }
+        
+        for (int i = 0; i < tipoArticulo.getItemCount(); i++) {
+            String talleItem = tipoArticulo.getItemAt(i).toString();
+            if (talleItem.equals(tipo)) {
+                tipoArticulo.setSelectedIndex(i);
+                break;
+            }
+        }
+    }//GEN-LAST:event_TablaArticulosMouseClicked
+
+    private void EditarArticulobtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EditarArticulobtnMouseClicked
+        int filaSeleccionada = TablaArticulos.getSelectedRow();        
+        int id = (int) TablaArticulos.getValueAt(filaSeleccionada, 0);
+        String descipcion = this.descripcionArticulo.getText();
+
+        TalleModel talleSeleccionado = (TalleModel) this.talleArticulo.getSelectedItem();
+        int idTalle = talleSeleccionado.getIdTalle();
+
+        TiposArticuloModel tipoArticuloSeleccionado = (TiposArticuloModel) this.tipoArticulo.getSelectedItem();
+        int idTipoArticulo = tipoArticuloSeleccionado.getIdTipoArticulo();
+
+        float precio = Float.parseFloat(this.precioArticulo.getText());
+
+        DistribuidoresModel distribuidor = (DistribuidoresModel) this.distribuidorArticulo.getSelectedItem();
+        int idDistribuidor = distribuidor.getIdDistribuidores();
+
+        EstadosModel estado = (EstadosModel) this.estadoArticulo.getSelectedItem();
+        int idEstado = estado.getIdEstado();
+
+        articulosController.update(new ArticulosModel(id,
+                idTipoArticulo, descipcion, precio, idEstado, idDistribuidor, idTalle
+        ));
+        LlenarTablaArticulos();
+    }//GEN-LAST:event_EditarArticulobtnMouseClicked
+
+    private void EliminarArticulobtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EliminarArticulobtnMouseClicked
+        int filaSeleccionada = TablaArticulos.getSelectedRow();        
+        int id = (int) TablaArticulos.getValueAt(filaSeleccionada, 0);
+        articulosController.delete(id);
+        LlenarTablaArticulos();
+    }//GEN-LAST:event_EliminarArticulobtnMouseClicked
 
     public void AbrirPagina(String url) {
         try {
@@ -1029,7 +1098,6 @@ public class DashBoard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel81;
     private javax.swing.JLabel jLabel82;
     private javax.swing.JLabel jLabel83;
-    private javax.swing.JLabel jLabel84;
     private javax.swing.JLabel jLabel85;
     private javax.swing.JLabel jLabel89;
     private javax.swing.JLabel jLabel9;
@@ -1060,7 +1128,6 @@ public class DashBoard extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane12;
     private javax.swing.JTable jTable11;
     private javax.swing.JTable jTable12;
-    private javax.swing.JComboBox<MarcaModel> marcaArticulo;
     private javax.swing.JTextField precioArticulo;
     private javax.swing.JTextField razonSocial;
     private javax.swing.JComboBox<TalleModel> talleArticulo;
