@@ -28,6 +28,7 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 import Models.ArticulosModelVM;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -44,10 +45,12 @@ public class DashBoard extends javax.swing.JFrame {
     DistribuidoresController distribuidorController = new DistribuidoresController();
     TalleController talleController = new TalleController();
     TiposArticuloController tiposArticuloController = new TiposArticuloController();
+    ImageIcon icon;
 
     public DashBoard() {
         initComponents();
-
+        icon = new ImageIcon(System.getProperty("user.dir")+ "/src/main/java/Imagenes/storeLogo.png");
+        setIconImage(icon.getImage());
         tablaDistribuidores = new DefaultTableModel();
         tablaTalles = new DefaultTableModel();
         tablaInventario = new DefaultTableModel();
